@@ -124,7 +124,10 @@ class _HomePageState extends State<HomePage>
                 child: ElevatedButton(
                   onPressed: widget.onGetSuggestions,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 16,
+                    ),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
                     ),
@@ -132,9 +135,20 @@ class _HomePageState extends State<HomePage>
                     foregroundColor: Colors.green,
                     elevation: 5,
                   ),
-                  child: const Text(
-                    '生成做饭建议',
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  child: const Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.auto_awesome),
+                      SizedBox(width: 10),
+                      Text(
+                        '生成做饭建议',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
