@@ -55,14 +55,18 @@ class _NavigationRootState extends State<NavigationRoot> {
             backgroundColor: Colors.white.withOpacity(0.95),
             type: BottomNavigationBarType.fixed,
             selectedItemColor: Colors.green,
+            selectedIconTheme: const IconThemeData(size: 28),
+            unselectedIconTheme: const IconThemeData(size: 28),
+            selectedLabelStyle: const TextStyle(fontSize: 12),
+            unselectedLabelStyle: const TextStyle(fontSize: 12),
             showUnselectedLabels: true,
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.recommend_outlined),
-                label: "推荐",
+                label: "菜单",
               ),
               BottomNavigationBarItem(
-                icon: Icon(Icons.camera_alt_rounded, size: 32),
+                icon: Icon(Icons.camera_alt_rounded),
                 label: "拍照",
               ),
               BottomNavigationBarItem(
