@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'api_key_page.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({super.key});
@@ -8,18 +9,23 @@ class ProfilePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: const Text("我的")),
       body: ListView(
-        children: const [
-          ListTile(
+        children: [
+          const ListTile(
             leading: Icon(Icons.history),
             title: Text("历史菜谱"),
           ),
-          ListTile(
+          const ListTile(
             leading: Icon(Icons.favorite_border),
             title: Text("收藏"),
           ),
           ListTile(
-            leading: Icon(Icons.settings),
-            title: Text("设置"),
+            leading: const Icon(Icons.vpn_key),
+            title: const Text("配置 Kimi API Key"),
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const ApiKeyPage()),
+              );
+            },
           ),
         ],
       ),

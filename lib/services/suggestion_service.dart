@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SuggestionService {
   static const _baseUrl = 'https://api.moonshot.ai/v1/chat/completions';
@@ -10,9 +11,9 @@ class SuggestionService {
     File? image,
     List<String> labels = const [],
   }) async {
-    const apiKey = String.fromEnvironment('KIMI_API_KEY');
-    if (apiKey.isEmpty) {
-      throw Exception('KIMI_API_KEY 未配置');
+    final apiKey = await readKey();
+    if (apiKey == null || apiKey.isEmpty) {
+      throw Exception('未设置 KIMI_API_KEY，请在“我的”页面中配置');
     }
 
     final contents = <Map<String, dynamic>>[];
@@ -59,5 +60,15 @@ class SuggestionService {
     }
     final content = choices.first['message']?['content'];
     return content is String ? content : content.toString();
+  }
+
+  static Future<String?> readKey() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('kimi_api_key');
+  }
+
+  static Future<void> saveKey(String key) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('kimi_api_key', key.trim());
   }
 }
