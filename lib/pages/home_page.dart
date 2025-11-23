@@ -122,7 +122,15 @@ class _HomePageState extends State<HomePage>
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 40),
                 child: ElevatedButton(
-                  onPressed: widget.onGetSuggestions,
+                  onPressed: () {
+                    if (selectedImage == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('请先拍照或上传图片')),
+                      );
+                      return;
+                    }
+                    widget.onGetSuggestions();
+                  },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 20,
