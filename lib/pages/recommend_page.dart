@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/suggestion_store.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class RecommendPage extends StatefulWidget {
   const RecommendPage({super.key});
@@ -8,10 +9,25 @@ class RecommendPage extends StatefulWidget {
 }
 
 class _RecommendPageState extends State<RecommendPage> {
+  final FlutterTts _tts = FlutterTts();
   @override
   void initState() {
     super.initState();
     SuggestionStore.instance.load();
+    _tts.setLanguage('zh-CN');
+    _tts.setSpeechRate(0.5);
+    _tts.setPitch(1.0);
+  }
+
+  @override
+  void dispose() {
+    _tts.stop();
+    super.dispose();
+  }
+
+  Future<void> _speak(String text) async {
+    await _tts.stop();
+    await _tts.speak(text);
   }
 
   @override
@@ -24,9 +40,7 @@ class _RecommendPageState extends State<RecommendPage> {
           if (list.isEmpty) {
             return ListView(
               padding: const EdgeInsets.all(20),
-              children: const [
-                Text("暂无已保存的建议"),
-              ],
+              children: const [Text("暂无已保存的建议")],
             );
           }
           return ListView.builder(
@@ -35,7 +49,8 @@ class _RecommendPageState extends State<RecommendPage> {
             itemBuilder: (context, index) {
               final item = list[index];
               final dt = DateTime.fromMillisecondsSinceEpoch(item.ts);
-              final timeStr = "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
+              final timeStr =
+                  "${dt.year}-${dt.month.toString().padLeft(2, '0')}-${dt.day.toString().padLeft(2, '0')} ${dt.hour.toString().padLeft(2, '0')}:${dt.minute.toString().padLeft(2, '0')}";
               return Container(
                 margin: const EdgeInsets.only(bottom: 14),
                 padding: const EdgeInsets.all(18),
@@ -48,9 +63,24 @@ class _RecommendPageState extends State<RecommendPage> {
                   children: [
                     Row(
                       children: [
-                        const Icon(Icons.restaurant_menu, color: Colors.green, size: 24),
+                        const Icon(
+                          Icons.restaurant_menu,
+                          color: Colors.green,
+                          size: 24,
+                        ),
                         const SizedBox(width: 8),
-                        Text(timeStr, style: const TextStyle(fontSize: 13, color: Colors.black54)),
+                        Text(
+                          timeStr,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.black54,
+                          ),
+                        ),
+                        const Spacer(),
+                        TextButton(
+                          onPressed: () => _speak(item.text),
+                          child: const Text('朗读'),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 10),

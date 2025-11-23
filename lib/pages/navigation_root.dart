@@ -5,6 +5,7 @@ import 'home_page.dart';
 import 'profile_page.dart';
 import '../services/suggestion_service.dart';
 import '../services/suggestion_store.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 
 class NavigationRoot extends StatefulWidget {
   const NavigationRoot({super.key});
@@ -18,6 +19,26 @@ class _NavigationRootState extends State<NavigationRoot> {
   final PageController controller = PageController(initialPage: 1);
   File? lastImage;
   List<String> labels = const [];
+  final FlutterTts _tts = FlutterTts();
+
+  @override
+  void initState() {
+    super.initState();
+    _tts.setLanguage('zh-CN');
+    _tts.setSpeechRate(0.5);
+    _tts.setPitch(1.0);
+  }
+
+  @override
+  void dispose() {
+    _tts.stop();
+    super.dispose();
+  }
+
+  Future<void> _speak(String text) async {
+    await _tts.stop();
+    await _tts.speak(text);
+  }
 
   Future<void> _autoDetectIngredients(File f) async {
     try {
@@ -139,6 +160,10 @@ class _NavigationRootState extends State<NavigationRoot> {
                       title: const Text('做饭建议'),
                       content: SingleChildScrollView(child: Text(text)),
                       actions: [
+                        TextButton(
+                          onPressed: () => _speak(text),
+                          child: const Text('朗读'),
+                        ),
                         TextButton(
                           onPressed: () async {
                             await SuggestionStore.instance.add(text);
