@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 
 class HomePage extends StatefulWidget {
   final Function(File?) onImageCaptured;
@@ -59,7 +60,19 @@ class _HomePageState extends State<HomePage>
                       imageQuality: 85,
                     );
                     if (xfile != null) {
-                      final file = File(xfile.path);
+                      File file;
+                      final path = xfile.path;
+                      if (path.isNotEmpty && File(path).existsSync()) {
+                        file = File(path);
+                      } else {
+                        final bytes = await xfile.readAsBytes();
+                        final dir = await getTemporaryDirectory();
+                        final tmp = File(
+                          '${dir.path}/camera_${DateTime.now().millisecondsSinceEpoch}.jpg',
+                        );
+                        await tmp.writeAsBytes(bytes, flush: true);
+                        file = tmp;
+                      }
                       setState(() => selectedImage = file);
                       widget.onImageCaptured(file);
                     }
@@ -178,7 +191,19 @@ class _HomePageState extends State<HomePage>
                         ).showSnackBar(const SnackBar(content: Text('未选择图片')));
                         return;
                       }
-                      final file = File(xfile.path);
+                      File file;
+                      final path = xfile.path;
+                      if (path.isNotEmpty && File(path).existsSync()) {
+                        file = File(path);
+                      } else {
+                        final bytes = await xfile.readAsBytes();
+                        final dir = await getTemporaryDirectory();
+                        final tmp = File(
+                          '${dir.path}/gallery_${DateTime.now().millisecondsSinceEpoch}.jpg',
+                        );
+                        await tmp.writeAsBytes(bytes, flush: true);
+                        file = tmp;
+                      }
                       setState(() => selectedImage = file);
                       widget.onImageCaptured(file);
                     } catch (e) {
