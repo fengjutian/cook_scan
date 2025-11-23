@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SuggestionService {
-  static const _baseUrl = 'https://api.moonshot.ai/v1/chat/completions';
+  static const _baseUrl = 'https://api.moonshot.cn/v1/chat/completions';
   static const _model = 'moonshot-v1-128k-vision-preview';
 
   static Future<String> getCookSuggestions({
@@ -34,8 +34,13 @@ class SuggestionService {
 
     final body = {
       'model': _model,
+      'temperature': 0.6,
       'messages': [
-        {'role': 'system', 'content': '你是一名会做中餐的烹饪助手，会根据用户提供的食材生成合理的菜谱建议。'},
+        {
+          'role': 'system',
+          'content':
+              '你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全、有帮助、准确的回答。',
+        },
         {'role': 'user', 'content': contents},
       ],
     };
@@ -72,11 +77,13 @@ class SuggestionService {
     }
     final body = {
       'model': _model,
+      'temperature': 0.6,
       'messages': [
+        {'role': 'system', 'content': '你是 Kimi，由 Moonshot AI 提供的人工智能助手。'},
         {
           'role': 'user',
           'content': [
-            {'type': 'text', 'text': 'ping'},
+            {'type': 'text', 'text': '你好'},
           ],
         },
       ],
