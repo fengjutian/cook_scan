@@ -4,6 +4,7 @@ import 'recommend_page.dart';
 import 'home_page.dart';
 import 'profile_page.dart';
 import '../services/suggestion_service.dart';
+import '../services/suggestion_store.dart';
 
 class NavigationRoot extends StatefulWidget {
   const NavigationRoot({super.key});
@@ -104,6 +105,18 @@ class _NavigationRootState extends State<NavigationRoot> {
                       title: const Text('做饭建议'),
                       content: SingleChildScrollView(child: Text(text)),
                       actions: [
+                        TextButton(
+                          onPressed: () async {
+                            await SuggestionStore.instance.add(text);
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('已保存到推荐')),
+                              );
+                            }
+                          },
+                          child: const Text('保存'),
+                        ),
                         TextButton(
                           onPressed: () => Navigator.of(context).pop(),
                           child: const Text('关闭'),
