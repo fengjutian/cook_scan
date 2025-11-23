@@ -99,36 +99,43 @@ class _RecommendPageState extends State<RecommendPage> {
                             color: Colors.black54,
                           ),
                         ),
-                        const Spacer(),
-                        TextButton(
-                          onPressed: () => _speak(item.text),
-                          child: const Text('朗读'),
-                        ),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () async {
-                            await Clipboard.setData(
-                              ClipboardData(text: item.text),
-                            );
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('已复制到剪贴板')),
-                            );
-                          },
-                          child: const Text('复制'),
-                        ),
-                        const SizedBox(width: 8),
-                        TextButton(
-                          onPressed: () async {
-                            await SuggestionStore.instance.removeAt(index);
-                            if (!mounted) return;
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text('已删除')),
-                            );
-                          },
-                          child: const Text('删除'),
-                        ),
                       ],
+                    ),
+                    const SizedBox(height: 6),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Wrap(
+                        spacing: 8,
+                        runSpacing: 4,
+                        children: [
+                          TextButton(
+                            onPressed: () => _speak(item.text),
+                            child: const Text('朗读'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              await Clipboard.setData(
+                                ClipboardData(text: item.text),
+                              );
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('已复制到剪贴板')),
+                              );
+                            },
+                            child: const Text('复制'),
+                          ),
+                          TextButton(
+                            onPressed: () async {
+                              await SuggestionStore.instance.removeAt(index);
+                              if (!mounted) return;
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('已删除')),
+                              );
+                            },
+                            child: const Text('删除'),
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 10),
                     Text(item.text, style: const TextStyle(fontSize: 14)),
