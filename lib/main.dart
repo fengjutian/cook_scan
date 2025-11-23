@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'pages/navigation_root.dart';
 
@@ -14,12 +13,8 @@ class AIRecipeApp extends StatelessWidget {
     return MaterialApp(
       title: 'AI Cook',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorSchemeSeed: Colors.green,
-      ),
+      theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.green),
       home: const NavigationRoot(),
     );
   }
 }
-
