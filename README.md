@@ -14,3 +14,13 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+- 使用编译期注入的 --dart-define ，不在代码库中硬编码密钥。
+- Android 真机运行示例：
+- flutter run --dart-define=KIMI_API_KEY=<你的新密钥>
+- 构建 APK：
+- flutter build apk --dart-define=KIMI_API_KEY=<你的新密钥>
+- iOS（需在 macOS）：
+- 运行： flutter run --dart-define=KIMI_API_KEY=<你的新密钥>
+- 构建： flutter build ios --dart-define=KIMI_API_KEY=<你的新密钥>

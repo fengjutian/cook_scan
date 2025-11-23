@@ -1,7 +1,9 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'recommend_page.dart';
 import 'home_page.dart';
 import 'profile_page.dart';
+import '../services/suggestion_service.dart';
 
 class NavigationRoot extends StatefulWidget {
   const NavigationRoot({super.key});
@@ -13,6 +15,8 @@ class NavigationRoot extends StatefulWidget {
 class _NavigationRootState extends State<NavigationRoot> {
   int index = 1; // 默认打开“拍照”
   final PageController controller = PageController(initialPage: 1);
+  File? lastImage;
+  List<String> labels = const [];
 
   void onTap(int i) {
     setState(() => index = i);
@@ -76,9 +80,47 @@ class _NavigationRootState extends State<NavigationRoot> {
         children: [
           const RecommendPage(),
           HomePage(
-            onImageCaptured: (_) {},
-            labels: const [],
-            onGetSuggestions: () {},
+            onImageCaptured: (f) {
+              setState(() => lastImage = f);
+            },
+            labels: labels,
+            onGetSuggestions: () async {
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (_) =>
+                    const Center(child: CircularProgressIndicator()),
+              );
+              try {
+                final text = await SuggestionService.getCookSuggestions(
+                  image: lastImage,
+                  labels: labels,
+                );
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text('做饭建议'),
+                      content: SingleChildScrollView(child: Text(text)),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('关闭'),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+              } catch (e) {
+                if (context.mounted) {
+                  Navigator.of(context).pop();
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('生成失败：$e')));
+                }
+              }
+            },
           ),
           const ProfilePage(),
         ],
