@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 class HomePage extends StatefulWidget {
   final Function(File?) onImageCaptured;
@@ -51,7 +52,17 @@ class _HomePageState extends State<HomePage>
               Expanded(
                 child: GestureDetector(
                   onTap: () async {
-                    // 调用你原来的拍照逻辑
+                    final picker = ImagePicker();
+                    final xfile = await picker.pickImage(
+                      source: ImageSource.camera,
+                      maxWidth: 1600,
+                      imageQuality: 85,
+                    );
+                    if (xfile != null) {
+                      final file = File(xfile.path);
+                      setState(() => selectedImage = file);
+                      widget.onImageCaptured(file);
+                    }
                   },
                   child: Padding(
                     padding: const EdgeInsets.all(20),
