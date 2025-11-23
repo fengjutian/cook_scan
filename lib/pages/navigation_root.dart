@@ -19,6 +19,33 @@ class _NavigationRootState extends State<NavigationRoot> {
   File? lastImage;
   List<String> labels = const [];
 
+  Future<void> _autoDetectIngredients(File f) async {
+    try {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('正在识别食材...')));
+      }
+      final result = await SuggestionService.detectIngredients(image: f);
+      if (!mounted) return;
+      setState(() => labels = result);
+      if (result.isNotEmpty) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('识别到：${result.join('、')}')));
+      } else {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(const SnackBar(content: Text('未识别到食材')));
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('识别失败：$e')));
+    }
+  }
+
   void onTap(int i) {
     setState(() => index = i);
     controller.animateToPage(
@@ -87,6 +114,9 @@ class _NavigationRootState extends State<NavigationRoot> {
           HomePage(
             onImageCaptured: (f) {
               setState(() => lastImage = f);
+              if (f != null) {
+                _autoDetectIngredients(f);
+              }
             },
             labels: labels,
             onGetSuggestions: () async {
