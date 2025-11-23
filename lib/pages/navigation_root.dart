@@ -20,13 +20,14 @@ class _NavigationRootState extends State<NavigationRoot> {
   File? lastImage;
   List<String> labels = const [];
   final FlutterTts _tts = FlutterTts();
+  bool _ttsReady = false;
 
   @override
   void initState() {
     super.initState();
-    _tts.setLanguage('zh-CN');
-    _tts.setSpeechRate(0.5);
-    _tts.setPitch(1.0);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initTts();
+    });
   }
 
   @override
@@ -36,8 +37,29 @@ class _NavigationRootState extends State<NavigationRoot> {
   }
 
   Future<void> _speak(String text) async {
-    await _tts.stop();
-    await _tts.speak(text);
+    try {
+      if (!_ttsReady) {
+        await _initTts();
+      }
+      await _tts.stop();
+      await _tts.speak(text);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('语音不可用：$e')));
+    }
+  }
+
+  Future<void> _initTts() async {
+    try {
+      await _tts.setLanguage('zh-CN');
+      await _tts.setSpeechRate(0.5);
+      await _tts.setPitch(1.0);
+      _ttsReady = true;
+    } catch (_) {
+      _ttsReady = false;
+    }
   }
 
   Future<void> _autoDetectIngredients(File f) async {

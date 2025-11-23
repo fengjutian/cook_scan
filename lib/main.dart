@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'pages/navigation_root.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(const AIRecipeApp());
 }
 

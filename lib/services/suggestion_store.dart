@@ -7,13 +7,15 @@ class SuggestionEntry {
   final int ts;
   SuggestionEntry({required this.text, required this.ts});
   Map<String, dynamic> toJson() => {'text': text, 'ts': ts};
-  static SuggestionEntry fromJson(Map<String, dynamic> j) => SuggestionEntry(text: j['text'] as String, ts: j['ts'] as int);
+  static SuggestionEntry fromJson(Map<String, dynamic> j) =>
+      SuggestionEntry(text: j['text'] as String, ts: j['ts'] as int);
 }
 
 class SuggestionStore {
   static final SuggestionStore instance = SuggestionStore._();
   SuggestionStore._();
-  final ValueNotifier<List<SuggestionEntry>> suggestions = ValueNotifier<List<SuggestionEntry>>(<SuggestionEntry>[]);
+  final ValueNotifier<List<SuggestionEntry>> suggestions =
+      ValueNotifier<List<SuggestionEntry>>(<SuggestionEntry>[]);
   static const _key = 'saved_suggestions';
 
   Future<void> load() async {
@@ -23,7 +25,10 @@ class SuggestionStore {
       suggestions.value = <SuggestionEntry>[];
       return;
     }
-    final list = (jsonDecode(raw) as List).cast<Map>().map((e) => SuggestionEntry.fromJson(e.cast<String, dynamic>())).toList();
+    final list = (jsonDecode(raw) as List)
+        .cast<Map>()
+        .map((e) => SuggestionEntry.fromJson(e.cast<String, dynamic>()))
+        .toList();
     list.sort((a, b) => b.ts.compareTo(a.ts));
     suggestions.value = list;
   }
@@ -34,6 +39,21 @@ class SuggestionStore {
     current.insert(0, SuggestionEntry(text: text, ts: now));
     suggestions.value = current;
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_key, jsonEncode(current.map((e) => e.toJson()).toList()));
+    await prefs.setString(
+      _key,
+      jsonEncode(current.map((e) => e.toJson()).toList()),
+    );
+  }
+
+  Future<void> removeAt(int index) async {
+    final current = List<SuggestionEntry>.from(suggestions.value);
+    if (index < 0 || index >= current.length) return;
+    current.removeAt(index);
+    suggestions.value = current;
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+      _key,
+      jsonEncode(current.map((e) => e.toJson()).toList()),
+    );
   }
 }

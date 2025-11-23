@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../services/suggestion_store.dart';
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:flutter/services.dart';
 
 class RecommendPage extends StatefulWidget {
   const RecommendPage({super.key});
@@ -10,13 +11,14 @@ class RecommendPage extends StatefulWidget {
 
 class _RecommendPageState extends State<RecommendPage> {
   final FlutterTts _tts = FlutterTts();
+  bool _ttsReady = false;
   @override
   void initState() {
     super.initState();
     SuggestionStore.instance.load();
-    _tts.setLanguage('zh-CN');
-    _tts.setSpeechRate(0.5);
-    _tts.setPitch(1.0);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await _initTts();
+    });
   }
 
   @override
@@ -26,8 +28,29 @@ class _RecommendPageState extends State<RecommendPage> {
   }
 
   Future<void> _speak(String text) async {
-    await _tts.stop();
-    await _tts.speak(text);
+    try {
+      if (!_ttsReady) {
+        await _initTts();
+      }
+      await _tts.stop();
+      await _tts.speak(text);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('语音不可用：$e')));
+    }
+  }
+
+  Future<void> _initTts() async {
+    try {
+      await _tts.setLanguage('zh-CN');
+      await _tts.setSpeechRate(0.5);
+      await _tts.setPitch(1.0);
+      _ttsReady = true;
+    } catch (_) {
+      _ttsReady = false;
+    }
   }
 
   @override
@@ -80,6 +103,30 @@ class _RecommendPageState extends State<RecommendPage> {
                         TextButton(
                           onPressed: () => _speak(item.text),
                           child: const Text('朗读'),
+                        ),
+                        const SizedBox(width: 8),
+                        TextButton(
+                          onPressed: () async {
+                            await Clipboard.setData(
+                              ClipboardData(text: item.text),
+                            );
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('已复制到剪贴板')),
+                            );
+                          },
+                          child: const Text('复制'),
+                        ),
+                        const SizedBox(width: 8),
+                        TextButton(
+                          onPressed: () async {
+                            await SuggestionStore.instance.removeAt(index);
+                            if (!mounted) return;
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('已删除')),
+                            );
+                          },
+                          child: const Text('删除'),
                         ),
                       ],
                     ),
