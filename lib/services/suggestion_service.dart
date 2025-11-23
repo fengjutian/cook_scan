@@ -20,7 +20,8 @@ class SuggestionService {
     final labelText = labels.isEmpty ? '未识别到具体食材' : labels.join('、');
     contents.add({
       'type': 'text',
-      'text': '食材：$labelText。请基于这些食材给出 3 道适合的家常菜，并提供每道菜的简要步骤与所需调料，用中文输出。',
+      'text':
+          '你是一名智能烹饪助手。已识别食材：$labelText。请基于可用食材生成 3 道易做的家常菜。每道菜输出：\n1）菜名\n2）适合人数\n3）预计用时\n4）难度（1-5）\n5）所需食材及用量\n6）调料\n7）步骤（编号、简洁、可执行，5-8 步）\n8）关键技巧\n9）注意事项\n规则：优先使用提供食材，必要时可补充常见配料；尽量控制整体用时不超过 30 分钟；避免稀有食材；用中文、条理清晰、分段输出。',
     });
 
     if (image != null && await image.exists()) {
@@ -36,11 +37,7 @@ class SuggestionService {
       'model': _model,
       'temperature': 0.6,
       'messages': [
-        {
-          'role': 'system',
-          'content':
-              '你是 Kimi，由 Moonshot AI 提供的人工智能助手，你更擅长中文和英文的对话。你会为用户提供安全、有帮助、准确的回答。',
-        },
+        {'role': 'system', 'content': '你是智能烹饪助手，负责生成安全、准确、可执行的中文家常菜建议。'},
         {'role': 'user', 'content': contents},
       ],
     };
@@ -134,12 +131,13 @@ class SuggestionService {
       'messages': [
         {
           'role': 'system',
-          'content': '你是食材识别助手。请只返回图片中主要食材名称，使用中文，用逗号分隔，不要解释。',
+          'content':
+              '你是食材识别助手。只返回图片中的主要食材通用名称，排除餐具、器皿、品牌词与背景物体。仅输出一个中文逗号分隔的字符串，不要任何解释或附加标点。',
         },
         {
           'role': 'user',
           'content': [
-            {'type': 'text', 'text': '识别这张图片中的主要食材，结果用中文逗号分隔。'},
+            {'type': 'text', 'text': '识别图片中的主要食材，仅返回中文逗号分隔的食材名称。'},
             {
               'type': 'image_url',
               'image_url': {'url': 'data:image/jpeg;base64,$b64'},
