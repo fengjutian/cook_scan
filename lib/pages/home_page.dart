@@ -39,7 +39,7 @@ class _HomePageState extends State<HomePage>
             children: [
               const SizedBox(height: 20),
               Text(
-                '食材识别 & 做饭建议',
+                '食材识别',
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
