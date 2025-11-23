@@ -49,5 +49,7 @@
 	<string>拍照用于识别食材</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>保存图片到相册</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>从相册选择图片用于识别食材</string>
 </dict>
 </plist>

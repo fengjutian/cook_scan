@@ -160,6 +160,37 @@ class _HomePageState extends State<HomePage>
                   ),
                 ),
               ),
+              const SizedBox(height: 12),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: OutlinedButton.icon(
+                  onPressed: () async {
+                    try {
+                      final picker = ImagePicker();
+                      final xfile = await picker.pickImage(
+                        source: ImageSource.gallery,
+                        maxWidth: 1600,
+                        imageQuality: 85,
+                      );
+                      if (xfile == null) {
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(const SnackBar(content: Text('未选择图片')));
+                        return;
+                      }
+                      final file = File(xfile.path);
+                      setState(() => selectedImage = file);
+                      widget.onImageCaptured(file);
+                    } catch (e) {
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text('选择失败：$e')));
+                    }
+                  },
+                  icon: const Icon(Icons.photo_library),
+                  label: const Text('从相册选择'),
+                ),
+              ),
 
               const SizedBox(height: 40),
             ],
