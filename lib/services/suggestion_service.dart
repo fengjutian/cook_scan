@@ -49,8 +49,11 @@ class SuggestionService {
       body: jsonEncode(body),
     );
 
+    if (resp.statusCode == 401) {
+      throw Exception('Kimi 认证失败(401): ${resp.body}');
+    }
     if (resp.statusCode != 200) {
-      throw Exception('Kimi 接口错误: ${resp.statusCode}');
+      throw Exception('Kimi 接口错误: ${resp.statusCode}: ${resp.body}');
     }
 
     final data = jsonDecode(resp.body);
@@ -64,7 +67,10 @@ class SuggestionService {
 
   static Future<String?> readKey() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('kimi_api_key');
+    final stored = prefs.getString('kimi_api_key');
+    if (stored != null && stored.isNotEmpty) return stored;
+    const envKey = String.fromEnvironment('KIMI_API_KEY');
+    return envKey.isEmpty ? null : envKey;
   }
 
   static Future<void> saveKey(String key) async {
