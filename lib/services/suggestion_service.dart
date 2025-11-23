@@ -42,14 +42,19 @@ class SuggestionService {
       ],
     };
 
-    final resp = await http.post(
-      Uri.parse(_baseUrl),
-      headers: {
-        'Authorization': 'Bearer $apiKey',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(body),
-    );
+    http.Response resp;
+    try {
+      resp = await http.post(
+        Uri.parse(_baseUrl),
+        headers: {
+          'Authorization': 'Bearer $apiKey',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+    } catch (e) {
+      throw Exception('网络错误：$e');
+    }
 
     if (resp.statusCode == 401) {
       throw Exception('Kimi 认证失败(401): ${resp.body}');
@@ -85,14 +90,19 @@ class SuggestionService {
         },
       ],
     };
-    final resp = await http.post(
-      Uri.parse(_baseUrl),
-      headers: {
-        'Authorization': 'Bearer $apiKey',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(body),
-    );
+    http.Response resp;
+    try {
+      resp = await http.post(
+        Uri.parse(_baseUrl),
+        headers: {
+          'Authorization': 'Bearer $apiKey',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+    } catch (e) {
+      throw Exception('网络错误：$e');
+    }
     if (resp.statusCode == 401) {
       throw Exception('认证失败(401): ${resp.body}');
     }
@@ -147,14 +157,19 @@ class SuggestionService {
       ],
     };
 
-    final resp = await http.post(
-      Uri.parse(_baseUrl),
-      headers: {
-        'Authorization': 'Bearer $apiKey',
-        'Content-Type': 'application/json',
-      },
-      body: jsonEncode(body),
-    );
+    http.Response resp;
+    try {
+      resp = await http.post(
+        Uri.parse(_baseUrl),
+        headers: {
+          'Authorization': 'Bearer $apiKey',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(body),
+      );
+    } catch (e) {
+      throw Exception('网络错误：$e');
+    }
 
     if (resp.statusCode == 401) {
       throw Exception('Kimi 认证失败(401): ${resp.body}');
