@@ -109,7 +109,9 @@ class _RecommendPageState extends State<RecommendPage> {
                         runSpacing: 4,
                         children: [
                           TextButton(
-                            onPressed: () => _speak(item.text),
+                            onPressed: _ttsReady
+                                ? () => _speak(item.text)
+                                : null,
                             child: const Text('朗读'),
                           ),
                           TextButton(

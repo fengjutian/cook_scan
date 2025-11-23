@@ -183,7 +183,7 @@ class _NavigationRootState extends State<NavigationRoot> {
                       content: SingleChildScrollView(child: Text(text)),
                       actions: [
                         TextButton(
-                          onPressed: () => _speak(text),
+                          onPressed: _ttsReady ? () => _speak(text) : null,
                           child: const Text('朗读'),
                         ),
                         TextButton(
