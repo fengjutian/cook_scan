@@ -92,6 +92,27 @@ class _ApiKeyPageState extends State<ApiKeyPage> {
                 child: Text(saving ? '保存中...' : '保存'),
               ),
             ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () async {
+                  try {
+                    await SuggestionService.validateKey();
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(const SnackBar(content: Text('密钥有效')));
+                  } catch (e) {
+                    if (!mounted) return;
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('密钥校验失败：$e')));
+                  }
+                },
+                child: const Text('测试密钥'),
+              ),
+            ),
           ],
         ),
       ),

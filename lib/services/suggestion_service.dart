@@ -65,6 +65,38 @@ class SuggestionService {
     return content is String ? content : content.toString();
   }
 
+  static Future<void> validateKey() async {
+    final apiKey = await readKey();
+    if (apiKey == null || apiKey.isEmpty) {
+      throw Exception('未设置 KIMI_API_KEY');
+    }
+    final body = {
+      'model': _model,
+      'messages': [
+        {
+          'role': 'user',
+          'content': [
+            {'type': 'text', 'text': 'ping'},
+          ],
+        },
+      ],
+    };
+    final resp = await http.post(
+      Uri.parse(_baseUrl),
+      headers: {
+        'Authorization': 'Bearer $apiKey',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(body),
+    );
+    if (resp.statusCode == 401) {
+      throw Exception('认证失败(401): ${resp.body}');
+    }
+    if (resp.statusCode != 200) {
+      throw Exception('接口错误: ${resp.statusCode}: ${resp.body}');
+    }
+  }
+
   static Future<String?> readKey() async {
     final prefs = await SharedPreferences.getInstance();
     final stored = prefs.getString('kimi_api_key');
