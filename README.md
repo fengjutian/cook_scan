@@ -1,26 +1,142 @@
-# cook_scan
+# CookScan - 智能食材识别与烹饪建议应用
 
-A new Flutter project.
+CookScan 是一款基于Flutter开发的跨平台应用，能够通过拍照或上传图片识别食材，并为用户提供个性化的烹饪建议。
 
-## Getting Started
+## 📱 功能特点
 
-This project is a starting point for a Flutter application.
+- 📸 **食材识别**：通过拍照或从相册选择图片，智能识别图片中的食材
+- 📝 **食材标签**：自动提取识别到的食材并以标签形式展示
+- 🍳 **烹饪建议**：根据识别到的食材，生成30分钟内可完成的家常菜建议
+- 🔒 **API密钥管理**：支持安全存储Kimi API密钥，无需每次输入
+- 🖥️ **跨平台支持**：支持Android、iOS、Windows、macOS和Linux平台
 
-A few resources to get you started if this is your first Flutter project:
+## 🛠️ 技术栈
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **框架**：Flutter 3.x
+- **语言**：Dart
+- **后端服务**：Kimi AI API (moonshot-v1-128k-vision-preview)
+- **核心依赖**：
+  - image_picker：图片选择功能
+  - http：网络请求
+  - shared_preferences：本地数据存储
+  - path_provider：文件路径处理
+  - flutter_tts：语音合成
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🚀 快速开始
 
+### 前提条件
 
-- 使用编译期注入的 --dart-define ，不在代码库中硬编码密钥。
-- Android 真机运行示例：
-- flutter run --dart-define=KIMI_API_KEY=<你的新密钥>
-- 构建 APK：
-- flutter build apk --dart-define=KIMI_API_KEY=<你的新密钥>
-- iOS（需在 macOS）：
-- 运行： flutter run --dart-define=KIMI_API_KEY=<你的新密钥>
-- 构建： flutter build ios --dart-define=KIMI_API_KEY=<你的新密钥>
+- Flutter SDK 3.9.0 或更高版本
+- Dart SDK 3.9.0 或更高版本
+- 各平台开发工具（Android Studio、Xcode、VS Code等）
+- Kimi API 密钥
+
+### 安装步骤
+
+1. **克隆项目**
+   ```bash
+   git clone https://github.com/yourusername/cook_scan.git
+   cd cook_scan
+   ```
+
+2. **安装依赖**
+   ```bash
+   flutter pub get
+   ```
+
+3. **配置API密钥**
+   有两种方式配置Kimi API密钥：
+
+   - **编译期注入（推荐）**：使用 `--dart-define` 参数
+     ```bash
+     flutter run --dart-define=KIMI_API_KEY=your_api_key_here
+     ```
+
+   - **应用内设置**：运行应用后，在"我的"页面手动输入API密钥
+
+4. **运行项目**
+   - Android：
+     ```bash
+     flutter run --dart-define=KIMI_API_KEY=your_api_key_here
+     ```
+   - iOS（需在macOS上）：
+     ```bash
+     flutter run --dart-define=KIMI_API_KEY=your_api_key_here
+     ```
+   - Web：
+     ```bash
+     flutter run -d chrome
+     ```
+
+## 🏗️ 构建应用
+
+### Android
+```bash
+flutter build apk --dart-define=KIMI_API_KEY=your_api_key_here
+```
+
+### iOS
+```bash
+flutter build ios --dart-define=KIMI_API_KEY=your_api_key_here
+```
+
+### Web
+```bash
+flutter build web
+```
+
+## 📱 使用说明
+
+1. **拍摄/选择食材照片**：点击主界面的图片区域拍照或从相册选择
+2. **查看食材标签**：应用会自动识别并显示图片中的食材
+3. **获取烹饪建议**：点击"生成做饭建议"按钮，获取基于识别到的食材的烹饪方案
+4. **管理API密钥**：在"我的"页面查看或修改API密钥设置
+
+## 🔧 开发说明
+
+### 项目结构
+```
+lib/
+├── main.dart            # 应用入口
+├── pages/               # 页面组件
+│   ├── home_page.dart   # 首页（食材识别）
+│   ├── recommend_page.dart  # 推荐页面
+│   ├── profile_page.dart    # 个人中心
+│   ├── api_key_page.dart    # API密钥设置
+│   └── navigation_root.dart # 导航根组件
+└── services/            # 服务层
+    ├── suggestion_service.dart  # 建议服务（API调用）
+    └── suggestion_store.dart    # 建议数据存储
+```
+
+### API调用
+应用使用Kimi AI的多模态模型进行图片识别和文本生成。所有API调用都在`SuggestionService`类中实现。
+
+## ⚠️ 注意事项
+
+- **API密钥安全**：请妥善保管您的API密钥，避免泄露
+- **网络连接**：应用需要稳定的网络连接才能使用所有功能
+- **权限要求**：首次使用时需要相机和存储权限
+- **图片质量**：为获得更好的识别效果，请确保食材图片清晰、光线充足
+
+## 🤝 贡献指南
+
+欢迎贡献代码！请遵循以下步骤：
+
+1. Fork 本仓库
+2. 创建功能分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add some amazing feature'`)
+4. 推送到分支 (`git push origin feature/amazing-feature`)
+5. 开启 Pull Request
+
+## 📄 许可证
+
+本项目采用 MIT 许可证。详情请查看 [LICENSE](LICENSE) 文件。
+
+## 📧 联系方式
+
+如有任何问题或建议，请随时联系项目维护者。
+
+---
+
+**使用愉快！烹饪从CookScan开始！** 🍽️✨
