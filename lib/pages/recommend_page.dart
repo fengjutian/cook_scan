@@ -56,7 +56,7 @@ class _RecommendPageState extends State<RecommendPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("今日推荐")),
+      appBar: AppBar(title: const Text("我的菜单")),
       body: ValueListenableBuilder<List<SuggestionEntry>>(
         valueListenable: SuggestionStore.instance.suggestions,
         builder: (context, list, _) {
